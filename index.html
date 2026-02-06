@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>horse-money</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>horse-money</h1>
+
+        <div class="row">
+            <div class="input-group">
+                <label>颈线位</label>
+                <input type="number" id="neckline" step="0.01" placeholder="请输入颈线位">
+            </div>
+            <div class="input-group">
+                <label>头部价格</label>
+                <input type="number" id="headPrice" step="0.01" placeholder="请输入头部价格">
+            </div>
+        </div>
+
+        <div class="button-row">
+            <button class="btn-calculate" id="calculateBtn">计算</button>
+            <button class="btn-ratio" id="ratioBtn">不够15倍</button>
+        </div>
+
+        <div class="result-section">
+            <div class="result-item">
+                <div class="result-label">目标价格</div>
+                <div class="result-value target" id="targetPrice">--</div>
+            </div>
+            <div class="divider"></div>
+            <div class="result-item">
+                <div class="result-label">买入价格</div>
+                <div class="result-value buy" id="buyPrice">--</div>
+            </div>
+            <div class="result-item">
+                <div class="result-label">止损价格</div>
+                <div class="result-value stop" id="stopPrice">--</div>
+            </div>
+            <div class="divider"></div>
+            <div class="result-item">
+                <div class="result-label">收益比</div>
+                <div class="result-value ratio" id="ratio">--</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
