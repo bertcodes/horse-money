@@ -1,3 +1,23 @@
+// 保存数据到本地存储
+function saveData(data) {
+    try {
+        localStorage.setItem('horseMoneyData', JSON.stringify(data));
+    } catch (e) {
+        console.log('保存数据失败：' + e.message);
+    }
+}
+
+// 从本地存储加载数据
+function loadData() {
+    try {
+        var data = localStorage.getItem('horseMoneyData');
+        return data ? JSON.parse(data) : null;
+    } catch (e) {
+        console.log('加载数据失败：' + e.message);
+        return null;
+    }
+}
+
 // 暴露到全局作用域
 window.calculate = function() {
     try {
@@ -22,6 +42,16 @@ window.calculate = function() {
         document.getElementById('buyPrice').textContent = buyPrice.toFixed(3);
         document.getElementById('stopPrice').textContent = stopPrice.toFixed(3);
         document.getElementById('ratio').textContent = ratio.toFixed(3);
+
+        // 保存数据
+        saveData({
+            neckline: neckline,
+            headPrice: headPrice,
+            targetPrice: targetPrice,
+            buyPrice: buyPrice,
+            stopPrice: stopPrice,
+            ratio: ratio
+        });
     } catch (e) {
         alert('计算出错：' + e.message);
     }
@@ -54,12 +84,22 @@ window.setRatio15 = function() {
         document.getElementById('buyPrice').textContent = buyPrice.toFixed(3);
         document.getElementById('stopPrice').textContent = stopPrice.toFixed(3);
         document.getElementById('ratio').textContent = '15.000';
+
+        // 保存数据
+        saveData({
+            neckline: neckline,
+            headPrice: headPrice,
+            targetPrice: targetPrice,
+            buyPrice: buyPrice,
+            stopPrice: stopPrice,
+            ratio: 15
+        });
     } catch (e) {
         alert('计算出错：' + e.message);
     }
 };
 
-// 页面加载完成后绑定事件
+// 页面加载完成后绑定事件并恢复数据
 window.addEventListener('load', function() {
     var calculateBtn = document.getElementById('calculateBtn');
     var ratioBtn = document.getElementById('ratioBtn');
@@ -78,6 +118,17 @@ window.addEventListener('load', function() {
         } else if (ratioBtn.attachEvent) {
             ratioBtn.attachEvent('onclick', window.setRatio15);
         }
+    }
+
+    // 恢复上次的数据
+    var savedData = loadData();
+    if (savedData) {
+        document.getElementById('neckline').value = savedData.neckline || '';
+        document.getElementById('headPrice').value = savedData.headPrice || '';
+        document.getElementById('targetPrice').textContent = savedData.targetPrice ? savedData.targetPrice.toFixed(3) : '--';
+        document.getElementById('buyPrice').textContent = savedData.buyPrice ? savedData.buyPrice.toFixed(3) : '--';
+        document.getElementById('stopPrice').textContent = savedData.stopPrice ? savedData.stopPrice.toFixed(3) : '--';
+        document.getElementById('ratio').textContent = savedData.ratio ? savedData.ratio.toFixed(3) : '--';
     }
 
     console.log('页面加载完成');
