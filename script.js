@@ -23,6 +23,7 @@ window.calculate = function() {
     try {
         var neckline = parseFloat(document.getElementById('neckline').value);
         var headPrice = parseFloat(document.getElementById('headPrice').value);
+        var customRatio = parseFloat(document.getElementById('ratioInput').value) || 15;
 
         if (isNaN(neckline) || isNaN(headPrice)) {
             alert('请输入有效的颈线位和头部价格！');
@@ -50,7 +51,8 @@ window.calculate = function() {
             targetPrice: targetPrice,
             buyPrice: buyPrice,
             stopPrice: stopPrice,
-            ratio: ratio
+            ratio: ratio,
+            customRatio: customRatio
         });
     } catch (e) {
         alert('计算出错：' + e.message);
@@ -61,6 +63,7 @@ window.setRatio15 = function() {
     try {
         var neckline = parseFloat(document.getElementById('neckline').value);
         var headPrice = parseFloat(document.getElementById('headPrice').value);
+        var customRatio = parseFloat(document.getElementById('ratioInput').value) || 15;
 
         if (isNaN(neckline) || isNaN(headPrice)) {
             alert('请输入有效的颈线位和头部价格！');
@@ -71,19 +74,19 @@ window.setRatio15 = function() {
         var targetPrice = neckline + neckline - headPrice;
         // 止损价格 = 颈线位
         var stopPrice = neckline;
-        // 收益比固定为15，反推买入价格
-        // 15 = (目标价 - 止损价) ÷ (买入价 - 止损价)
-        // 15 * (买入价 - 止损价) = 目标价 - 止损价
-        // 15 * 买入价 - 15 * 止损价 = 目标价 - 止损价
-        // 15 * 买入价 = 目标价 - 止损价 + 15 * 止损价
-        // 15 * 买入价 = 目标价 + 14 * 止损价
-        // 买入价 = (目标价 + 14 * 止损价) / 15
-        var buyPrice = (targetPrice + 14 * stopPrice) / 15;
+        // 根据自定义收益比反推买入价格
+        // R = (目标价 - 止损价) ÷ (买入价 - 止损价)
+        // R * (买入价 - 止损价) = 目标价 - 止损价
+        // R * 买入价 - R * 止损价 = 目标价 - 止损价
+        // R * 买入价 = 目标价 - 止损价 + R * 止损价
+        // R * 买入价 = 目标价 + (R - 1) * 止损价
+        // 买入价 = (目标价 + (R - 1) * 止损价) / R
+        var buyPrice = (targetPrice + (customRatio - 1) * stopPrice) / customRatio;
 
         document.getElementById('targetPrice').textContent = targetPrice.toFixed(3);
         document.getElementById('buyPrice').textContent = buyPrice.toFixed(3);
         document.getElementById('stopPrice').textContent = stopPrice.toFixed(3);
-        document.getElementById('ratio').textContent = '15.000';
+        document.getElementById('ratio').textContent = customRatio.toFixed(3);
 
         // 保存数据
         saveData({
@@ -92,7 +95,8 @@ window.setRatio15 = function() {
             targetPrice: targetPrice,
             buyPrice: buyPrice,
             stopPrice: stopPrice,
-            ratio: 15
+            ratio: customRatio,
+            customRatio: customRatio
         });
     } catch (e) {
         alert('计算出错：' + e.message);
@@ -125,6 +129,7 @@ window.addEventListener('load', function() {
     if (savedData) {
         document.getElementById('neckline').value = savedData.neckline || '';
         document.getElementById('headPrice').value = savedData.headPrice || '';
+        document.getElementById('ratioInput').value = savedData.customRatio || 15;
         document.getElementById('targetPrice').textContent = savedData.targetPrice ? savedData.targetPrice.toFixed(3) : '--';
         document.getElementById('buyPrice').textContent = savedData.buyPrice ? savedData.buyPrice.toFixed(3) : '--';
         document.getElementById('stopPrice').textContent = savedData.stopPrice ? savedData.stopPrice.toFixed(3) : '--';
