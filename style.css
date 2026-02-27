@@ -420,6 +420,16 @@ button {
     text-decoration: underline;
 }
 
+.form-warning {
+    font-size: 12px;
+    color: #8a6a5a;
+    margin-bottom: 15px;
+    padding: 8px 12px;
+    background: #fef5e6;
+    border-left: 3px solid #e8c46f;
+    border-radius: 4px;
+}
+
 .token-display {
     padding: 10px 12px;
     background: #f8f9fa;

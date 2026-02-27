@@ -98,6 +98,11 @@ function syncToGist() {
     }
 
     var history = loadHistory();
+    if (history.length === 0) {
+        alert('暂无历史记录，请先进行计算');
+        return;
+    }
+
     var gistId = getGistId();
     var url, method, body;
 
@@ -136,13 +141,15 @@ function syncToGist() {
     })
     .then(function(response) {
         if (!response.ok) {
-            throw new Error('同步失败: ' + response.status);
+            return response.json().then(function(err) {
+                throw new Error(err.message || '同步失败: ' + response.status);
+            });
         }
         return response.json();
     })
     .then(function(data) {
         setGistId(data.id);
-        alert('同步成功！');
+        alert('同步成功！\n\nGist ID: ' + data.id + '\n记录数: ' + history.length + ' 条');
     })
     .catch(function(error) {
         alert('同步失败: ' + error.message);
@@ -343,6 +350,10 @@ window.openSyncSettings = function() {
     var tokenSection = document.getElementById('tokenSection');
     var tokenSaved = document.getElementById('tokenSaved');
 
+    // 清空输入框
+    document.getElementById('githubToken').value = '';
+    document.getElementById('gistId').value = '';
+
     if (token) {
         tokenSection.style.display = 'none';
         tokenSaved.style.display = 'block';
@@ -351,8 +362,6 @@ window.openSyncSettings = function() {
     } else {
         tokenSection.style.display = 'block';
         tokenSaved.style.display = 'none';
-        document.getElementById('githubToken').value = '';
-        document.getElementById('gistId').value = gistId || '';
     }
 
     document.getElementById('syncPopup').classList.add('active');
@@ -380,10 +389,19 @@ window.saveToken = function() {
         setGistId(gistIdInput);
     }
 
+    // 清空输入框
     document.getElementById('githubToken').value = '';
     document.getElementById('gistId').value = '';
+
+    // 重新检查 token 是否保存成功
+    var savedToken = getGistToken();
+    if (savedToken) {
+        alert('配置已保存\n\n注意：配置保存在当前浏览器中，在 Gist 页面或 GitHub Pages 上需要重新输入');
+    } else {
+        alert('配置保存失败，可能是浏览器限制导致 localStorage 不可用');
+    }
+
     openSyncSettings();
-    alert('配置已保存');
 };
 
 // 删除 Token
@@ -391,8 +409,12 @@ window.deleteToken = function() {
     if (confirm('确定要删除已保存的配置吗？')) {
         localStorage.removeItem(GIST_TOKEN_KEY);
         localStorage.removeItem(GIST_ID_KEY);
-        openSyncSettings();
+
+        // 清空显示的 Gist ID
+        document.getElementById('currentGistId').value = '';
+
         alert('配置已删除');
+        openSyncSettings();
     }
 };
 
