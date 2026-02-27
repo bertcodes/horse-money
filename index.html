@@ -12,22 +12,21 @@
 
         <div class="row">
             <div class="input-group">
-                <label>颈线位</label>
+                <label for="neckline">颈线位</label>
                 <input type="number" id="neckline" step="0.01" placeholder="请输入颈线位">
             </div>
             <div class="input-group">
-                <label>头部价格</label>
+                <label for="headPrice">头部价格</label>
                 <input type="number" id="headPrice" step="0.01" placeholder="请输入头部价格">
             </div>
         </div>
 
         <div class="row">
             <div class="input-group">
-                <label>收益比</label>
+                <label for="ratioInput">收益比</label>
                 <input type="number" id="ratioInput" step="0.1" placeholder="默认15" value="15">
             </div>
-            <div class="input-group">
-                <label>&nbsp;</label>
+            <div class="input-group" style="display: flex; align-items: flex-end;">
                 <button class="btn-ratio" id="ratioBtn">按收益比计算</button>
             </div>
         </div>
@@ -54,6 +53,69 @@
             <div class="result-item">
                 <div class="result-label">收益比</div>
                 <div class="result-value ratio" id="ratio">--</div>
+            </div>
+        </div>
+
+        <div class="button-row">
+            <button class="btn-settings" id="settingsBtn">⚙️ GitHub设置</button>
+            <button class="btn-sync" id="syncBtn">☁️ 同步到Gist</button>
+            <button class="btn-restore" id="restoreBtn">📥 从Gist加载</button>
+        </div>
+
+        <div class="button-row">
+            <button class="btn-history" id="historyBtn">📜 历史记录</button>
+        </div>
+
+        <!-- 历史记录弹窗 -->
+        <div class="popup" id="historyPopup" onclick="closeHistory(event)">
+            <div class="popup-content" onclick="event.stopPropagation()">
+                <div class="popup-header">
+                    <span class="popup-title">历史记录</span>
+                    <button class="close-btn" onclick="closeHistory()">×</button>
+                </div>
+                <div class="popup-body" id="historyList">
+                    <div class="empty-tip">暂无历史记录</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gist 同步设置弹窗 -->
+        <div class="popup" id="syncPopup" onclick="closeSyncSettings(event)">
+            <div class="popup-content" onclick="event.stopPropagation()">
+                <div class="popup-header">
+                    <span class="popup-title">Gist 同步设置</span>
+                    <button class="close-btn" onclick="closeSyncSettings()">×</button>
+                </div>
+                <div class="popup-body">
+                    <div id="tokenSection">
+                        <div class="form-group">
+                            <label for="githubToken">GitHub Token</label>
+                            <input type="password" id="githubToken" placeholder="请输入 GitHub Personal Access Token">
+                        </div>
+                        <div class="form-group">
+                            <label for="gistId">Gist ID (选填)</label>
+                            <input type="text" id="gistId" placeholder="用于多设备同步，首次留空">
+                        </div>
+                        <div class="form-tip">
+                            需要 gist 权限的 Token，前往 <a href="https://github.com/settings/tokens/new?scopes=gist&description=Horse%20Money" target="_blank">GitHub 设置</a> 创建
+                        </div>
+                        <button class="btn-save-token" id="saveTokenBtn">保存配置</button>
+                    </div>
+                    <div id="tokenSaved" style="display: none;">
+                        <div class="form-group">
+                            <label for="tokenDisplay">Token 已保存</label>
+                            <div class="token-display" id="tokenDisplay">••••••••</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="currentGistId">Gist ID</label>
+                            <input type="text" id="currentGistId" placeholder="Gist ID">
+                        </div>
+                        <div class="form-tip">
+                            复制 Gist ID 可在其他设备同步数据
+                        </div>
+                        <button class="btn-delete-token" id="deleteTokenBtn">删除配置</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
